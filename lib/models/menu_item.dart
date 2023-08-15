@@ -2,6 +2,7 @@ class MenuItem {
   final int id;
   // final List<dynamic>? images;
   // final List<Map<String, dynamic>>? originalImage;
+  final String? image;
   final String? createdAt;
   final String? modifiedAt;
   final String? uid;
@@ -20,6 +21,7 @@ class MenuItem {
 
   MenuItem({
     required this.id,
+    this.image,
     // this.images,
     // this.originalImage,
     this.createdAt,
@@ -42,6 +44,8 @@ class MenuItem {
   factory MenuItem.fromJson(Map<String, dynamic> json) {
     return MenuItem(
       id: json['id'],
+      image:
+          'https://images.unsplash.com/photo-1598515213712-623a4da0cfad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
       // images: json['images'] ?? [],
       // originalImage: json['original_image'],
       createdAt: json['created_date'],
@@ -49,7 +53,7 @@ class MenuItem {
       uid: json['uid'],
       slug: json['slug'],
       name: json['name'],
-      description: json['description'],
+      description: json['description'] ?? '',
       basePrice: json['base_price'],
       virtualPrice: json['virtual_price'],
       currency: json['currency'],
