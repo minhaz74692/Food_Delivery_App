@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:provider/provider.dart';
+import 'package:remote_kitchen_quiz/pages/checkout_page.dart';
+import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
 
 import 'package:remote_kitchen_quiz/tabs/home_tab.dart';
 
@@ -23,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildScreens = <Widget>[
     HomeTab(),
     HomeTab(),
-    HomeTab(),
+    CheckOutPage(),
     HomeTab(),
     // SearchTab(),
     // BookMarkTab(),
@@ -65,6 +68,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int cartItemCount = Provider.of<ItemBloc>(context).itemListInCart.length;
     return WillPopScope(
       onWillPop: () async => await _onWillPop(),
       child: SafeArea(
@@ -78,6 +82,27 @@ class _HomePageState extends State<HomePage> {
               "Nawab's Kitchen",
               style: TextStyle(color: Colors.indigo),
             ),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 18, top: 5),
+                child: Badge(
+                  label: Text(
+                    cartItemCount != 0 ? cartItemCount.toString() : '',
+                    style: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900),
+                  ),
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.indigo,
+                      )),
+                ),
+              )
+            ],
           ),
           body: PersistentTabView(
             context,
@@ -134,8 +159,8 @@ class _HomePageState extends State<HomePage> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.heart),
-        title: ("Favourite"),
+        icon: Icon(Icons.shopping_cart),
+        title: ("Cart"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

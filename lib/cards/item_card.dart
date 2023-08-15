@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_kitchen_quiz/models/menu_item.dart';
 import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
-import 'package:remote_kitchen_quiz/utils/next_screen.dart';
 
 class ItemCard1 extends StatelessWidget {
-  const ItemCard1(
-      {super.key, required this.item, required this.thisProductList});
+  const ItemCard1({super.key, required this.item, required this.thisItemList});
   final MenuItem item;
-  final List<MenuItem> thisProductList;
+  final List<MenuItem> thisItemList;
 
   @override
   Widget build(BuildContext context) {
@@ -61,24 +59,29 @@ class ItemCard1 extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    Center(
-                      child: SizedBox(
-                        height: 35,
-                        width: 150,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 7, 255, 27),
-                          ),
-                          onPressed: () {
-                            Provider.of<ItemBloc>(context, listen: false)
-                                .addProductToCart(item);
-                          },
+                    SizedBox(
+                      width: 80,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ItemModal(
+                                  item: item,
+                                  thisItemList: thisItemList,
+                                );
+                              });
+                        },
+                        child: Center(
                           child: Text(
-                            'Add To Cart',
+                            'Add +',
                             style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -101,6 +104,128 @@ class ItemCard1 extends StatelessWidget {
                   height: 180,
                   fit: BoxFit.cover,
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ItemModal extends StatefulWidget {
+  const ItemModal({super.key, required this.item, required this.thisItemList});
+  final MenuItem item;
+  final List<MenuItem> thisItemList;
+
+  @override
+  State<ItemModal> createState() => _ItemModalState();
+}
+
+class _ItemModalState extends State<ItemModal> {
+  int itemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // itemCount = widget.thisItemList.length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ib = context.watch<ItemBloc>();
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        height: 300,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+              child: Image.network(
+                widget.item.image.toString(),
+                width: double.infinity,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              child: Text(
+                widget.item.name.toString(),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                widget.item.description.toString(),
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  child: IconButton(
+                    icon: Icon(Icons.remove),
+                    onPressed: () {
+                      if (itemCount > 0) {
+                        // ib.removeItemFromCart(widget.item);
+                        setState(() {
+                          itemCount--;
+                        });
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    itemCount.toString(),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  child: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      // ib.addItemToCart(widget.item);
+                      setState(() {
+                        itemCount++;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
+                onPressed: () {
+                  for (var i = 0; i < itemCount; i++) {
+                    ib.addItemToCart(widget.item);
+                  }
+                  setState(() {
+                    itemCount = 0;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text('Add to Cart'),
               ),
             ),
           ],

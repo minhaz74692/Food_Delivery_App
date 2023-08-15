@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:remote_kitchen_quiz/api_helper.dart';
 import 'package:remote_kitchen_quiz/cards/item_card.dart';
 import 'package:remote_kitchen_quiz/models/menu_item.dart';
+import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -33,6 +35,8 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    List<MenuItem> itemListInCart =
+        Provider.of<ItemBloc>(context).itemListInCart;
     return _isLoading
         ? Center(
             child: Container(
@@ -42,12 +46,18 @@ class _HomeTabState extends State<HomeTab> {
             ),
           )
         : Container(
-            color: Color.fromARGB(255, 243, 240, 240),
+            color: const Color.fromARGB(255, 243, 240, 240),
             child: ListView.builder(
               itemCount: itemList.length,
               itemBuilder: (BuildContext context, index) {
+                MenuItem singleItem =
+                    // ProductList().products[index];s
+                    itemList[index];
+                List<MenuItem> thisItemList = itemListInCart
+                    .where((item) => item.id == singleItem.id)
+                    .toList();
                 return ItemCard1(
-                    item: itemList[index], thisProductList: itemList);
+                    item: itemList[index], thisItemList: thisItemList);
               },
             ),
           );

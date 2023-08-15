@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:remote_kitchen_quiz/models/menu_item.dart';
 
 class ItemBloc extends ChangeNotifier {
-  
   int count = 0;
   int price = 0;
-  List<MenuItem> productListOfCart = [];
+  List<MenuItem> itemListInCart = [];
 
-  void addProductToCart(MenuItem x) {
-    productListOfCart.add(x);
+  void addItemToCart(MenuItem x) {
+    itemListInCart.add(x);
     notifyListeners();
   }
 
-  void removeProductFromCart(MenuItem x) {
-    productListOfCart.remove(x);
+  void removeItemFromCart(MenuItem x) {
+    itemListInCart.remove(x);
     notifyListeners();
   }
 
