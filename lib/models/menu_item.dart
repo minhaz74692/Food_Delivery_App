@@ -45,7 +45,7 @@ class MenuItem {
     return MenuItem(
       id: json['id'],
       image:
-          'https://images.unsplash.com/photo-1598515213712-623a4da0cfad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
+          'https://images.unsplash.com/photo-1603064432115-ddcd7e888bb7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80',
       // images: json['images'] ?? [],
       // originalImage: json['original_image'],
       createdAt: json['created_date'],

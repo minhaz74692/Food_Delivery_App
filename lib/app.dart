@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_kitchen_quiz/pages/home.dart';
 import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
+import 'package:remote_kitchen_quiz/providers/tabcontroller_bloc.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -17,9 +18,10 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ItemBloc>(create: (context) => ItemBloc()),
+        ChangeNotifierProvider<TabControllerBloc>(
+            create: (context) => TabControllerBloc()),
       ],
-      child: const MaterialApp(
-          debugShowCheckedModeBanner: false, home: HomePage()),
+      child: const MaterialApp(debugShowCheckedModeBanner: false, home: HomePage()),
     );
   }
 }

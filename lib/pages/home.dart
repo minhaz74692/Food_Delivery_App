@@ -1,175 +1,88 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_field, prefer_final_fields
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
-import 'package:remote_kitchen_quiz/pages/checkout_page.dart';
-import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
-
+import 'package:remote_kitchen_quiz/pages/cart_page.dart';
+import 'package:remote_kitchen_quiz/providers/tabcontroller_bloc.dart';
 import 'package:remote_kitchen_quiz/tabs/home_tab.dart';
+import 'package:remote_kitchen_quiz/utils/next_screen.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class HomePage extends StatefulWidget {
+  static String title = 'salomon_bottom_bar';
+
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  // ignore: library_private_types_in_public_api
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
-
-  // ignore: prefer_final_fields
-  List<Widget> _buildScreens = <Widget>[
-    HomeTab(),
-    HomeTab(),
-    CheckOutPage(),
-    HomeTab(),
-    // SearchTab(),
-    // BookMarkTab(),
-    // ProfileTab(),
-  ];
-
-  int selectedIndex = 0;
-  PageController? _pageController;
-  Future _onWillPop() async {
-    if (selectedIndex != 0) {
-      setState(() => selectedIndex = 0);
-      _pageController!.animateToPage(0,
-          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-    } else {
-      await SystemChannels.platform
-          .invokeMethod<void>('SystemNavigator.pop', true);
-    }
-  }
-
-  void onTabTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-    _pageController?.animateToPage(index,
-        curve: Curves.easeIn, duration: Duration(milliseconds: 250));
-  }
-
-  @override
-  void initState() {
-    _pageController = PageController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pageController!.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    int cartItemCount = Provider.of<ItemBloc>(context).itemListInCart.length;
-    return WillPopScope(
-      onWillPop: () async => await _onWillPop(),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            scrolledUnderElevation: 5,
-            elevation: 1,
-            backgroundColor: Colors.white,
-            title: Text(
-              "Nawab's Kitchen",
-              style: TextStyle(color: Colors.indigo),
-            ),
-            actions: [
-              Container(
-                margin: EdgeInsets.only(right: 18, top: 5),
-                child: Badge(
-                  label: Text(
-                    cartItemCount != 0 ? cartItemCount.toString() : '',
-                    style: TextStyle(
-                        color: Colors.indigo,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900),
-                  ),
-                  backgroundColor: Colors.white,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.shopping_cart,
-                        color: Colors.indigo,
-                      )),
-                ),
-              )
-            ],
+    var currentIndex = Provider.of<TabControllerBloc>(context).currentIndex;
+    return Scaffold(
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: currentIndex,
+        onTap: (i) {
+          setState(() {
+            currentIndex = i;
+          });
+          if (currentIndex == 2) {
+            nextScreen(context, CartPage());
+          } else {
+            context.read<TabControllerBloc>().controlTab(i);
+          }
+        },
+        items: [
+          /// Home
+          SalomonBottomBarItem(
+            icon: Icon(CupertinoIcons.home),
+            title: Text("Home"),
+            selectedColor: Colors.purple,
+            unselectedColor: Colors.grey[600],
           ),
-          body: PersistentTabView(
-            context,
-            controller: _controller,
-            screens: _buildScreens,
-            items: _navBarsItems(),
-            confineInSafeArea: true,
-            // backgroundColor: Color.fromARGB(255, 230, 233, 238),
-            backgroundColor: Colors.white,
-            // Default is Colors.white.
-            handleAndroidBackButtonPress: true, // Default is true.
-            resizeToAvoidBottomInset:
-                true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-            stateManagement: true, // Default is true.
-            hideNavigationBarWhenKeyboardShows:
-                true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-            decoration: NavBarDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              colorBehindNavBar: Colors.white,
+
+          /// Likes
+          SalomonBottomBarItem(
+            icon: Icon(
+              CupertinoIcons.search,
             ),
-            popAllScreensOnTapOfSelectedTab: true,
-            popActionScreens: PopActionScreensType.all,
-            itemAnimationProperties: ItemAnimationProperties(
-              // Navigation Bar's items animation properties.
-              duration: Duration(milliseconds: 400),
-              curve: Curves.ease,
-            ),
-            screenTransitionAnimation: ScreenTransitionAnimation(
-              // Screen transition animation on change of selected tab.
-              animateTabTransition: true,
-              curve: Curves.ease,
-              duration: Duration(milliseconds: 200),
-            ),
-            navBarStyle: NavBarStyle
-                .style1, // Choose the nav bar style with this property.
+            title: Text("Search"),
+            selectedColor: Colors.purple,
+            unselectedColor: Colors.grey[600],
           ),
-        ),
+
+          /// Search
+          SalomonBottomBarItem(
+            icon: Icon(CupertinoIcons.shopping_cart),
+            title: Text("Cart"),
+            selectedColor: Colors.purple,
+            unselectedColor: Colors.grey[600],
+          ),
+
+          /// Profile
+          SalomonBottomBarItem(
+            icon: Icon(CupertinoIcons.settings),
+            title: Text("Settings"),
+            selectedColor: Colors.purple,
+            unselectedColor: Colors.grey[600],
+          ),
+        ],
+      ),
+      body: PageView(
+        allowImplicitScrolling: true,
+        controller: context.read<TabControllerBloc>().pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: const [
+          HomeTab(),
+          HomeTab(),
+          CartPage(),
+          HomeTab(),
+        ],
       ),
     );
-  }
-
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.home),
-        title: ("Home"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.search),
-        title: ("Search"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.shopping_cart),
-        title: ("Cart"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.settings),
-        title: ("Settings"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-    ];
   }
 }

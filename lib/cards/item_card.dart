@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_kitchen_quiz/models/menu_item.dart';
 import 'package:remote_kitchen_quiz/providers/item_bloc.dart';
+import 'package:remote_kitchen_quiz/utils/toast.dart';
 
 class ItemCard1 extends StatelessWidget {
   const ItemCard1({super.key, required this.item, required this.thisItemList});
@@ -92,18 +93,15 @@ class ItemCard1 extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              // height: double.infinity,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10)),
-                child: Image.network(
-                  item.image.toString(),
-                  width: 100,
-                  height: 180,
-                  fit: BoxFit.cover,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10)),
+              child: Image.network(
+                item.image.toString(),
+                width: 100,
+                height: 180,
+                fit: BoxFit.cover,
               ),
             ),
           ],
@@ -138,8 +136,8 @@ class _ItemModalState extends State<ItemModal> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       contentPadding: EdgeInsets.zero,
-      content: Container(
-        height: 300,
+      content: SizedBox(
+        height: 350,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,7 +147,7 @@ class _ItemModalState extends State<ItemModal> {
               child: Image.network(
                 widget.item.image.toString(),
                 width: double.infinity,
-                height: 120,
+                height: 150,
                 fit: BoxFit.cover,
               ),
             ),
@@ -157,14 +155,14 @@ class _ItemModalState extends State<ItemModal> {
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               child: Text(
                 widget.item.name.toString(),
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 widget.item.description.toString(),
-                style: TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 14),
               ),
             ),
             SizedBox(
@@ -217,13 +215,16 @@ class _ItemModalState extends State<ItemModal> {
                 style:
                     ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
                 onPressed: () {
-                  for (var i = 0; i < itemCount; i++) {
-                    ib.addItemToCart(widget.item);
-                  }
-                  setState(() {
-                    itemCount = 0;
+                  showMessage('$itemCount Item Added to Your Cart');
+                  Future.delayed(Duration(milliseconds: 200), () {
+                    for (var i = 0; i < itemCount; i++) {
+                      ib.addItemToCart(widget.item);
+                    }
+                    setState(() {
+                      itemCount = 0;
+                    });
+                    Navigator.pop(context);
                   });
-                  Navigator.pop(context);
                 },
                 child: Text('Add to Cart'),
               ),

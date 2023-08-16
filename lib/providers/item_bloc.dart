@@ -16,6 +16,16 @@ class ItemBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearCart() {
+    itemListInCart.clear();
+    notifyListeners();
+  }
+
+  void removeThisItemFromCart(MenuItem x) {
+    itemListInCart.removeWhere((product) => product.id == x.id);
+    notifyListeners();
+  }
+
   void increment() {
     count++;
     notifyListeners();
