@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:remote_kitchen_quiz/pages/home.dart';
 import 'package:remote_kitchen_quiz/utils/next_screen.dart';
-
-import '../providers/item_bloc.dart';
 
 class CheckOutPage extends StatefulWidget {
   const CheckOutPage(
@@ -26,7 +23,6 @@ class CheckOutPage extends StatefulWidget {
 class _CheckOutPageState extends State<CheckOutPage> {
   @override
   Widget build(BuildContext context) {
-    final pb = context.watch<ItemBloc>();
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 5,
@@ -40,7 +36,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
           color: Colors.grey[700],
           onPressed: () {
             nextScreen(context, HomePage());
-            pb.clearCart();
+           
           },
         ),
       ),

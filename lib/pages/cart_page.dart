@@ -107,9 +107,10 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             )
-          : SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height - 50,
+          : SizedBox(
+              height: MediaQuery.of(context).size.height - 50,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -353,6 +354,7 @@ class _CartPageState extends State<CartPage> {
                             backgroundColor:
                                 _validation ? Colors.blue : Colors.grey),
                         onPressed: () {
+                          _validation ? pb.clearCart() : null;
                           _validation ? showMessage('Order Confirmed') : null;
                           _validation
                               ? {
@@ -372,7 +374,6 @@ class _CartPageState extends State<CartPage> {
                                       : addressCtlr.text.isEmpty
                                           ? showMessage('Address is required')
                                           : null;
-                          
                         },
                         child: SizedBox(
                           width: 100,

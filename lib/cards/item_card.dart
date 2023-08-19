@@ -215,16 +215,18 @@ class _ItemModalState extends State<ItemModal> {
                 style:
                     ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
                 onPressed: () {
-                  showMessage('$itemCount Item Added to Your Cart');
-                  Future.delayed(Duration(milliseconds: 200), () {
-                    for (var i = 0; i < itemCount; i++) {
-                      ib.addItemToCart(widget.item);
-                    }
-                    setState(() {
-                      itemCount = 0;
+                  if (itemCount > 0) {
+                    showMessage('$itemCount Item Added to Your Cart');
+                    Future.delayed(Duration(milliseconds: 200), () {
+                      for (var i = 0; i < itemCount; i++) {
+                        ib.addItemToCart(widget.item);
+                      }
+                      setState(() {
+                        itemCount = 0;
+                      });
+                      Navigator.pop(context);
                     });
-                    Navigator.pop(context);
-                  });
+                  }
                 },
                 child: Text('Add to Cart'),
               ),
